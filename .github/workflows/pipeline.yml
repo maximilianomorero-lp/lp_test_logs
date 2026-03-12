@@ -1,11 +1,18 @@
 name: Pipeline
 
 on:
-  push:
-    branches: ["**"]
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
 
 jobs:
+  ci:
+    uses: maximilianomorero-lp/cicd-templates/.github/workflows/ci.yml@main
+    with:
+      service_name: micro-x
+
   build:
+    needs: ci
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
     with:
       service_name: micro-x
