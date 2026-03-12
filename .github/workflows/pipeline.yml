@@ -9,10 +9,14 @@ jobs:
   ci:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/ci.yml@main
     with:
-      service_name: micro-x
+      service_name: ${{ github.event.repository.name }}
 
   build:
     needs: ci
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
     with:
-      service_name: micro-x
+      service_name: ${{ github.event.repository.name }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
