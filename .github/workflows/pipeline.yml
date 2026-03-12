@@ -4,14 +4,19 @@ on:
   pull_request:
     branches: [main, develop]
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
 
 jobs:
+  # ── Corre en PRs hacia main y develop ──────────────────────
   ci:
+    if: github.event_name == 'pull_request'
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/ci.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
 
-  build:
+  build-pr:
+    if: github.event_name == 'pull_request'
     needs: ci
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
     with:
@@ -20,3 +25,28 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
+  # ── Corre al mergear a main → build + deploy a prod ────────
+  build-main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
+    with:
+      service_name: ${{ github.event.repository.name }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
+  deploy-prod:
+    needs: build-main
+    uses: maximilianomorero-lp/cicd-templates/.github/workflows/deploy.yml@main
+    with:
+      service_name: ${{ github.event.repository.name }}
+      image_uri: ${{ needs.build-main.outputs.image_uri }}
+      cluster: production
+      ecs_service: production-lp_test_logs
+      task_definition: production-lp_test_logs
+      container_name: production-lp_test_logs
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
