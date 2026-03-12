@@ -1,0 +1,11 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>{ "container_name": "${container_name:-default}", "trace_id":"%X{trace_id}", "internal_id":"%X{internal_id}","level":"%level" , "message":"%msg" }%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
