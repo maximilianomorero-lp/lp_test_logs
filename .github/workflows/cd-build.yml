@@ -9,7 +9,7 @@ on:
         type: choice
         options: [main, develop]
       custom_tag:
-        description: 'Tag personalizado (opcional, por defecto usa el SHA)'
+        description: 'Tag personalizado (opcional, por defecto usa BRANCH-SHORT_SHA)'
         type: string
         default: ''
 

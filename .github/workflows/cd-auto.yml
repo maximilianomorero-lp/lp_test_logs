@@ -1,29 +1,28 @@
-ame: CD Auto
+name: CD Auto
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   build:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
+      push_latest: true
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/deploy.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
       image_uri: ${{ needs.build.outputs.image_uri }}
-      cluster: production
-      ecs_service: production-lp_test_logs
-      task_definition: production-lp_test_logs
-      container_name: production-lp_test_logs
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
