@@ -3,8 +3,13 @@ name: CD Deploy
 on:
   workflow_dispatch:
     inputs:
-      image_uri:
-        description: 'URI completa de la imagen a deployar'
+      environment:
+        description: 'Ambiente destino'
+        required: true
+        type: choice
+        options: [stage, production]
+      image_tag:
+        description: 'Tag de la imagen (ej: feature/test-a1b2c3d o develop-a1b2c3d o main-a1b2c3d)'
         required: true
         type: string
 
@@ -13,7 +18,8 @@ jobs:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/deploy.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
-      image_uri: ${{ inputs.image_uri }}
+      environment: ${{ inputs.environment }}
+      image_tag: ${{ inputs.image_tag }}
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
