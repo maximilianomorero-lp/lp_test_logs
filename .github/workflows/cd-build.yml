@@ -1,0 +1,20 @@
+name: CD Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      custom_tag:
+        description: 'Tag personalizado (opcional, por defecto usa el SHA)'
+        type: string
+        default: ''
+
+jobs:
+  build:
+    uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
+    with:
+      service_name: ${{ github.event.repository.name }}
+      custom_tag: ${{ inputs.custom_tag }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}

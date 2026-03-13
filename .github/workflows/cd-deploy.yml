@@ -1,35 +1,24 @@
-name: CD Manual
+name: CD Deploy
 
 on:
   workflow_dispatch:
     inputs:
+      image_uri:
+        description: 'URI completa de la imagen a deployar'
+        required: true
+        type: string
       environment:
         description: 'Ambiente destino'
         required: true
         type: choice
         options: [stage, prod]
-      custom_tag:
-        description: 'Tag personalizado (opcional)'
-        type: string
-        default: ''
 
 jobs:
-  build:
-    uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
-    with:
-      service_name: ${{ github.event.repository.name }}
-      custom_tag: ${{ inputs.custom_tag }}
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-
   deploy:
-    needs: build
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/deploy.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
-      image_uri: ${{ needs.build.outputs.image_uri }}
+      image_uri: ${{ inputs.image_uri }}
       cluster: production
       ecs_service: production-lp_test_logs
       task_definition: production-lp_test_logs
