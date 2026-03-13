@@ -10,6 +10,9 @@ jobs:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/ci.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   build:
     needs: tests
