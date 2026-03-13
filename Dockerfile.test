@@ -20,3 +20,5 @@ RUN chown -R runner:runner /app
 USER runner
 
 CMD ["mvn", "-B", "--no-transfer-progress", "-Dmaven.clean.failOnError=false", "clean", "verify"]
+
+##docker build -f Dockerfile.test -t lp_test_logs:test . 2>&1

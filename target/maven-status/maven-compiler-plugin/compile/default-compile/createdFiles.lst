@@ -1,0 +1,6 @@
+com/localpayment/lp_test_logs/controller/HealthCheckController.class
+com/localpayment/lp_test_logs/cron/LogCron.class
+com/localpayment/lp_test_logs/config/WebConfig.class
+com/localpayment/lp_test_logs/config/CustomExceptionHandler.class
+com/localpayment/lp_test_logs/LpTestLogsApplication.class
+com/localpayment/lp_test_logs/config/LogsInterceptor.class
