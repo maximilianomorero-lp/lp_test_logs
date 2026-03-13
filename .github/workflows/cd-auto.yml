@@ -25,7 +25,7 @@ jobs:
     with:
       service_name: ${{ github.event.repository.name }}
       environment: production
-      image_tag: ${{ needs.build.outputs.image_uri }}
+      image_tag: ${{ needs.build.outputs.image_tag }}
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
