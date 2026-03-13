@@ -3,6 +3,11 @@ name: CD Build
 on:
   workflow_dispatch:
     inputs:
+      ecr_repo:
+        description: 'Repositorio ECR destino'
+        required: true
+        type: choice
+        options: [main, develop]
       custom_tag:
         description: 'Tag personalizado (opcional, por defecto usa el SHA)'
         type: string
@@ -13,6 +18,7 @@ jobs:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/build.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
+      ecr_repo: ${{ inputs.ecr_repo }}
       custom_tag: ${{ inputs.custom_tag }}
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
