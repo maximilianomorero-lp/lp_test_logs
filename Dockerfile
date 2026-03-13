@@ -11,3 +11,4 @@ COPY --from=build /app/target/application.jar ./
 USER 1000:1000
 ENTRYPOINT ["java", "-jar", "application.jar"]
 
+
