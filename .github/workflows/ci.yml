@@ -5,6 +5,10 @@ on:
     branches: [main, develop]
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   tests:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/ci.yml@main
