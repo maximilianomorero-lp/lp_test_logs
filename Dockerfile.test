@@ -8,7 +8,7 @@ RUN getent group $GID || addgroup -g $GID runner && \
 
 WORKDIR /app
 COPY . .
-RUN chown -R runner:runner /app
+RUN mkdir -p /app/target && chown -R runner:runner /app
 
 USER runner
 
