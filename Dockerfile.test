@@ -7,8 +7,6 @@ RUN getent group $GID || addgroup -g $GID runner && \
     adduser -D -u $UID -G runner runner
 
 WORKDIR /app
-COPY go.mod ./
-RUN go mod download
 COPY . .
 RUN chown -R runner:runner /app
 
