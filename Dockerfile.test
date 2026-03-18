@@ -15,3 +15,4 @@ USER runner
 CMD ["go", "test", "-v", "./..."]
 
 ##docker build -f Dockerfile.test -t lp_test_logs:test .
+

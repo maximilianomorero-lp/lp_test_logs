@@ -9,3 +9,4 @@ COPY --from=builder /app/application ./
 USER 1000:1000
 EXPOSE 8080
 ENTRYPOINT ["./application"]
+
