@@ -1,24 +1,19 @@
-FROM maven:3.8.3-openjdk-17
+FROM golang:1.22-alpine
 
 ARG UID=1000
 ARG GID=1000
 
-# Crea grupo solo si no existe, luego el usuario
-RUN getent group $GID || groupadd -g $GID runner && \
-    useradd -m -u $UID -g $GID runner
+RUN getent group $GID || addgroup -g $GID runner && \
+    adduser -D -u $UID -G runner runner
 
-ENV MAVEN_CONFIG=/home/runner/.m2
 WORKDIR /app
-
-COPY pom.xml .
-RUN mvn -B dependency:go-offline
-
+COPY go.mod ./
+RUN go mod download
 COPY . .
-
 RUN chown -R runner:runner /app
 
 USER runner
 
-CMD ["mvn", "-B", "--no-transfer-progress", "-Dmaven.clean.failOnError=false", "clean", "verify"]
+CMD ["go", "test", "-v", "./..."]
 
-##docker build -f Dockerfile.test -t lp_test_logs:test . 2>&1
+##docker build -f Dockerfile.test -t lp_test_logs:test .

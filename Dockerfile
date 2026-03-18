@@ -1,17 +1,13 @@
-FROM maven:3.8.3-openjdk-17 AS build
+FROM golang:1.22-alpine AS builder
 WORKDIR /app
-ADD pom.xml .
-RUN mvn dependency:go-offline
-ADD . .
-RUN mvn clean package -DskipTests
+COPY go.mod ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o application .
 
-FROM eclipse-temurin:17-jre AS runtime
+FROM alpine:3.19
 WORKDIR /app
-COPY --from=build /app/target/application.jar ./
+COPY --from=builder /app/application ./
 USER 1000:1000
-ENTRYPOINT ["java", "-jar", "application.jar"]
-
-
-
-
-
+EXPOSE 8080
+ENTRYPOINT ["./application"]
