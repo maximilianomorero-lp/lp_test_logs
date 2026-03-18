@@ -5,6 +5,10 @@ on:
     branches: [main, develop]
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   tests:
     uses: maximilianomorero-lp/cicd-templates/.github/workflows/ci.yml@main
@@ -13,6 +17,15 @@ jobs:
     # secrets:
     #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     #   SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  claude-review:
+    uses: maximilianomorero-lp/cicd-templates/.github/workflows/claude-pr-review.yml@main
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      base_ref: ${{ github.base_ref }}
+      language: 'es'
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
   build:
     needs: tests
