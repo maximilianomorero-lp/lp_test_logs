@@ -46,6 +46,23 @@ func TestHealthHandler(t *testing.T) {
 	}
 }
 
+func TestVersionHandler(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/version", nil)
+	w := httptest.NewRecorder()
+
+	versionHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status 200, got %d", w.Code)
+	}
+	if !strings.Contains(w.Body.String(), "1.0.0") {
+		t.Errorf("expected body to contain '1.0.0', got %s", w.Body.String())
+	}
+	if !strings.Contains(w.Body.String(), "service") {
+		t.Errorf("expected body to contain 'service', got %s", w.Body.String())
+	}
+}
+
 func TestLoggingMiddleware(t *testing.T) {
 	called := false
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
