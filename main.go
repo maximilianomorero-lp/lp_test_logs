@@ -82,6 +82,16 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "UP"})
 }
 
+func versionHandler(w http.ResponseWriter, r *http.Request) {
+	traceID, internalID := getHeaders(r)
+	logJSON("INFO", traceID, internalID, "GET /version")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"version": "1.0.0",
+		"service": containerName,
+	})
+}
+
 func startCron() {
 	ticker := time.NewTicker(5 * time.Second)
 	go func() {
@@ -100,6 +110,7 @@ func main() {
 	mux.HandleFunc("/ping", pingHandler)
 	mux.HandleFunc("/exception", exceptionHandler)
 	mux.HandleFunc("/health", healthHandler)
+	mux.HandleFunc("/version", versionHandler)
 
 	logJSON("INFO", "", "", "Starting server on :8080")
 	if err := http.ListenAndServe(":8080", loggingMiddleware(mux)); err != nil {
